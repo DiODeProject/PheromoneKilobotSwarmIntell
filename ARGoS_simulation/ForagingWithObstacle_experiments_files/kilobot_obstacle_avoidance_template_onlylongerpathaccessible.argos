@@ -1,0 +1,159 @@
+<?xml version="1.0" ?>
+<argos-configuration>
+
+  <!-- ************************* -->
+  <!-- * General configuration * -->
+  <!-- ************************* -->
+  <framework>
+    <system threads="0" />
+    <experiment length="3600"
+                ticks_per_second="10"
+                random_seed="634415"/>
+  </framework>
+  
+
+  <!-- *************** -->
+  <!-- * Controllers * -->
+  <!-- *************** -->
+  <controllers>
+    <kilobot_controller id="kbc">
+      <actuators>
+        <differential_steering implementation="default"
+            bias_avg="0.000015"
+            bias_stddev="0.00186"/>
+        <kilobot_led implementation="default" medium="leds" />
+        <kilobot_communication implementation="default" />
+      </actuators>
+      <sensors>
+        <kilobot_communication implementation="default" medium="kilocomm" show_rays="false" />
+      </sensors>
+      <params behavior="examples/behaviors/kilobot_foraging" />
+    </kilobot_controller>
+
+  </controllers>
+
+    <!-- ****************** -->
+    <!-- * Loop functions * -->
+    <!-- ****************** -->
+    <loop_functions library="examples/loop_functions/libark_loop_functions2"
+        label="ark_loop_functions2"
+        datafilename="tmp_phero.txt"
+        frequency="3000"
+        cells_per_metre="150"
+	      data_recording_start_time="1"
+        cells_per_metre_obs="1000"
+        obstacle_avoidance_range="0.01"
+        show_obstacle_avoidance_range="false" >
+        
+        <pheromone_params evaporation_rate="0.1" diffusion_rate="0.02" pheromone_amount ="250"/>
+    
+        <option id="0" quality="15" position="-0.75,0.0" radius="0.1" color="3" />
+    
+        <option id="1" quality="10" position="0.75,0.0" radius="0.1" color="9" />
+
+    </loop_functions>
+
+
+
+  <!-- *********************** -->
+  <!-- * Arena configuration * -->
+  <!-- *********************** -->
+    <arena size="2, 2,1" center="0,0,0">
+
+    <box id="wall_north" size="2,0.01,0.1" movable="false">
+        <body position="0,1,0" orientation="0,0,0" />
+    </box>
+    <box id="wall_south" size="2,0.01,0.1" movable="false">
+        <body position="0,-1,0" orientation="0,0,0" />
+    </box>
+    <box id="wall_east" size="0.01,2,0.1" movable="false">
+        <body position="1,0,0" orientation="0,0,0" />
+    </box>
+    <box id="wall_west" size="0.01,2,0.1" movable="false">
+        <body position="-1,0,0" orientation="0,0,0" />
+    </box>
+
+
+    <box id="vertical" size="0.04,1.4,0.01" movable="false">
+        <body position="0,0,0" orientation="90,0,0" />
+    </box>
+
+    <box id="horizontal" size="0.04,0.8,0.01" movable="false">
+        <body position="0,0.2,0" orientation="0,0,0" />
+    </box>
+
+    <box id="upper_right" size="0.04,0.705,0.01" movable="false">
+        <body position="0.354,-0.091,0" orientation="104.8,0,0" />
+    </box>
+
+    <box id="bottom_right" size="0.04,0.705,0.01" movable="false">
+        <body position="-0.354,-0.091,0" orientation="-104.8,0,0" />
+    </box>
+
+    <box id="upper_left" size="0.04,0.894,0.01" movable="false"  >
+        <body position="0.3472,0.2945,0" orientation="49.5,0,0"/>
+    </box>
+
+    <box id="bottom_left" size="0.04,0.894,0.01" movable="false"  >
+        <body position="-0.3472,0.2945,0"  orientation="-49.5,0,0"/>
+    </box>
+
+    
+    <box id="horizontal_limit" size="0.04,1,0.01" movable="false"  >
+        <body position="-0.66,-0.5,0"  orientation="0,0,0"/>
+    </box>
+
+    <box id="vertical_limit" size="0.04,0.6,0.01" movable="false"  >
+        <body position="0.7,0,0"  orientation="90,0,0"/>
+    </box>
+
+
+    <distribute>
+        <position method="uniform" min="-0.9,-0.8,0" max="-0.7,0.8,0" /> 
+        <orientation method="uniform" min="0,0,0" max="360,0,0" />
+        <entity quantity="50" max_trials="500">
+            <kilobot id="kb">
+                <controller config="kbc" /> 
+                <dynamics2d friction="0.7" />
+            </kilobot>
+        </entity>
+    </distribute>
+
+   <floor id="floor"
+    source="loop_functions"
+    pixels_per_meter="100" />
+   
+
+  </arena>
+
+  <!-- ******************* -->
+  <!-- * Physics engines * -->
+  <!-- ******************* -->
+  <physics_engines>
+    <dynamics2d id="dyn2d" />
+  </physics_engines>
+
+  <!-- ********* -->
+  <!-- * Media * -->
+  <!-- ********* -->
+  <media>
+    <kilobot_communication id="kilocomm" />
+    <led id="leds" />
+  </media>
+
+<!-- ****************** -->
+<!-- * Visualization * -->
+<!-- ****************** -->
+<visualization>
+    <qt-opengl>
+        <camera>
+            <placement idx="0" position="0,0.075,0.675" look_at="0,0.075,-0.325" up="1,0,0" lens_focal_length="20" />
+            <placement idx="1" position="0.698353,0.0406916,0.150645" look_at="0.718335,0.0398918,-0.849155" up="0.999,-0.0399813,0.0199987" lens_focal_length="20" />
+            <placement idx="2" position="0.0991124,-0.22085,0.257469" look_at="0.0991124,-0.22085,-0.742531" up="0.994856,-0.101302,0" lens_focal_length="20" />
+            <placement idx="3" position="0.0557748,0.611663,0.194361" look_at="0.095209,0.605023,-0.80484" up="0.985329,-0.165914,0.0399893" lens_focal_length="20" />
+        </camera>
+    </qt-opengl>
+</visualization>
+
+
+</argos-configuration>
